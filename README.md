@@ -1,35 +1,40 @@
 # Inventory Variance Tracker (Python)
 
-A command-line application that detects and classifies inventory discrepancies based on expected vs counted quantities.
+A command-line Python application that compares expected and counted inventory quantities and classifies the result as:
 
-## Overview
+- Surplus  
+- Unexpected Surplus  
+- Inventory Deficit  
+- Stockout  
 
-This tool helps identify and categorize inventory variances into:
-
-- Surplus
-- Unexpected Surplus
-- Inventory Deficit
-- Stockout
-
-It applies configurable percent-based severity thresholds (`HIGH` / `CRITICAL`) and generates a structured summary report.
+The tool applies configurable percent-based severity thresholds (`HIGH` / `CRITICAL`) and generates a structured summary report.
 
 ---
 
-## Design Approach
+## 🚀 Features
 
-The program:
-
-- Validates user input to ensure non-negative integers
-- Prevents divide-by-zero errors for unexpected inventory
-- Separates classification logic from presentation
-- Uses named constants to eliminate magic numbers
-- Tracks aggregate metrics and largest variance cases
-
-Severity thresholds are configurable through constants, allowing easy adjustment without modifying classification logic.
+- Interactive CLI workflow
+- Input validation for non-negative integers
+- Variance classification logic
+- Percent-based severity thresholds (configurable via constants)
+- Divide-by-zero protection for unexpected inventory
+- Tie-aware tracking of largest variances
+- Aggregated summary reporting
+- Modular structure using helper functions and `main()` entry point
 
 ---
 
-## 🧪 Example Output
+## 🧠 Design Highlights
+
+- Classification logic is separated from presentation logic.
+- Severity thresholds are defined as named constants to eliminate magic numbers.
+- Edge cases (stockout, unexpected surplus, zero variance) are handled explicitly.
+- Helper functions reduce duplication and improve maintainability.
+- Execution is wrapped in a `main()` function with an `if __name__ == "__main__":` guard for clean module behavior.
+
+---
+
+## 🧪 Example Run
 
 ```
 Item: Widget OVER by 15
@@ -48,18 +53,40 @@ Total absolute variance: 19
 
 ---
 
-## What This Demonstrates
+## 🔧 Configuration
 
-- Structured control flow and input validation
-- Edge-case handling (stockout and unexpected surplus)
-- Threshold-based classification systems
-- Incremental refactoring toward production-quality structure
+Severity thresholds are defined at the top of the script:
+
+```python
+CRITICAL_THRESHOLD = 25
+HIGH_THRESHOLD = 12
+```
+
+Adjust these values to change classification sensitivity.
 
 ---
 
-## Future Improvements
+## 📌 Future Improvements
 
-- Extract reusable input helper functions
-- Add unit tests for boundary conditions
-- Wrap execution in a `main()` entry point
-- Extend to CSV-based inventory ingestion
+- Add unit tests for boundary and edge cases
+- Support CSV file input/output
+- Persist inventory results to disk
+- Expand into a file-based reconciliation tool
+
+---
+
+## 🛠 Tech Stack
+
+- Python 3
+- Standard Library only
+- Command-Line Interface (CLI)
+
+---
+
+## 📖 What This Project Demonstrates
+
+- Structured control flow and state tracking
+- Defensive programming practices
+- Edge-case reasoning
+- Threshold-based classification systems
+- Incremental refactoring toward production-style structure
