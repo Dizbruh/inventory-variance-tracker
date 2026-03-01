@@ -1,92 +1,105 @@
-# Inventory Variance Tracker (Python)
+# Inventory Variance Tracker (CLI)
 
-A command-line Python application that compares expected and counted inventory quantities and classifies the result as:
+A command-line inventory reconciliation tool built in Python.
 
-- Surplus  
-- Unexpected Surplus  
-- Inventory Deficit  
-- Stockout  
+Enter expected and counted quantities for items, then generate a structured summary report highlighting discrepancies, severity levels, and the largest over/under variances.
 
-The tool applies configurable percent-based severity thresholds (`HIGH` / `CRITICAL`) and generates a structured summary report.
+Built after Parts 1–2 of the University of Helsinki Python MOOC and refactored in Version 2 to improve structure and reporting clarity.
 
 ---
 
-## 🚀 Features
+## Features
 
-- Interactive CLI workflow
 - Input validation for non-negative integers
-- Variance classification logic
-- Percent-based severity thresholds (configurable via constants)
-- Divide-by-zero protection for unexpected inventory
-- Tie-aware tracking of largest variances
-- Aggregated summary reporting
-- Modular structure using helper functions and `main()` entry point
+- Detects:
+  - Surplus
+  - Inventory deficit
+  - Stockout
+  - Unexpected surplus
+- Severity classification using percentage-based thresholds
+- Tie-handling for largest over/under variances
+- Clean summary reporting
+- Clear output when all items match expected quantities
 
 ---
 
-## 🧠 Design Highlights
+## Version 2 Improvements
 
-- Classification logic is separated from presentation logic.
-- Severity thresholds are defined as named constants to eliminate magic numbers.
-- Edge cases (stockout, unexpected surplus, zero variance) are handled explicitly.
-- Helper functions reduce duplication and improve maintainability.
-- Execution is wrapped in a `main()` function with an `if __name__ == "__main__":` guard for clean module behavior.
+- Replaced parallel lists with a dictionary-based `records` data model
+- Eliminated index alignment bugs (alerts and item data cannot drift)
+- Refactored summary calculations into a dedicated `compute_summary(records)` pass
+- Simplified summary control flow and removed unreachable logic
+- Standardized output formatting and spacing
+- Removed unused tracking state to reduce cognitive load
 
 ---
 
-## 🧪 Example Run
+## Design Notes
 
+- Uses a single `records` list of dictionaries as the source of truth
+- Each record contains:
+  - `name`
+  - `expected`
+  - `counted`
+  - `variance`
+  - `abs_var`
+  - `alert` (or `None`)
+- Summary metrics are derived by scanning `records` (counts, totals, largest over/under with ties)
+- Severity classification avoids divide-by-zero by only applying percentage thresholds when `expected > 0`
+
+---
+
+## How to Run
+
+```bash
+python3 inventory_tracker.py
 ```
-Item: Widget OVER by 15
-CRITICAL Surplus
 
-Item: Bolts UNDER by 4
-HIGH Inventory deficit
+Type `done` when finished entering items to generate the summary report.
 
+---
+
+## Example Output
+
+```text
 === Summary Report ===
+
 Total items checked: 2
-Items with variance: 2
+Items and counts:
+
+Item name: Milk | Variance: 5
+Expected: 10 | Counted: 15
+Alert: HIGH Surplus
+
+Item name: Eggs | Variance: 0
+Expected: 12 | Counted: 12
+
+======================
+
 Items with variance over: 1
-Items with variance under: 1
-Total absolute variance: 19
+Items with variance under: 0
+
+Largest over variance: Milk by 5
 ```
 
 ---
 
-## 🔧 Configuration
+## Future Improvements
 
-Severity thresholds are defined at the top of the script:
-
-```python
-CRITICAL_THRESHOLD = 25
-HIGH_THRESHOLD = 12
-```
-
-Adjust these values to change classification sensitivity.
+- Add financial impact estimates (price per item × variance)
+- Export report to file (CSV or text)
+- Sorting options for report output
+- Optional reorder-point flagging
 
 ---
 
-## 📌 Future Improvements
+## Why This Project
 
-- Add unit tests for boundary and edge cases
-- Support CSV file input/output
-- Persist inventory results to disk
-- Expand into a file-based reconciliation tool
+This project demonstrates:
 
----
-
-## 🛠 Tech Stack
-
-- Python 3
-- Standard Library only
-- Command-Line Interface (CLI)
-
----
-
-## 📖 What This Project Demonstrates
-
-- Structured control flow and state tracking
-- Defensive programming practices
-- Edge-case reasoning
-- Threshold-based classification systems
-- Incremental refactoring toward production-style structure
+- Input validation
+- Conditional logic and classification
+- Loop-based data entry and reporting
+- Refactoring discipline
+- Data structure evolution (parallel lists → record dictionaries)
+- Business-oriented summary output
